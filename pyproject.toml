@@ -1,0 +1,13 @@
+[project]
+name = "mpc2creo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "orjson>=3.10.18",
+    "pydantic>=2.11.7",
+    "pystac-client>=0.8.6",
+    "pyyaml>=6.0.2",
+]
