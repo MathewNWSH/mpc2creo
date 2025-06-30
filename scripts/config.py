@@ -90,8 +90,9 @@ def save_with_empty_links(
 ):
     os.makedirs(dest_dir, exist_ok=True)
     catalog.normalize_hrefs(dest_dir)  # Normalizujemy ścieżki do plików lokalnych
-
-    for krotka in catalog.walk():
+    ndjson_paths = []
+    for idx, krotka in enumerate(catalog.walk()):
+        ndjson_data = []
         for obj in krotka[1]:
             try:
                 obj.keywords.append("IPCEI")
@@ -152,18 +153,21 @@ def save_with_empty_links(
 
             file_path = obj.get_self_href()
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            ndjson_paths.append(file_path.replace('collection.json', 'items.ndjson'))
             with open(file_path, "w") as f:
                 json.dump(obj_dict, f, indent=2)
 
         for obj in krotka[2]:
             obj_dict = obj.to_dict()
             obj_dict["links"] = []
+            ndjson_data.append(obj_dict)
 
-            file_path = obj.get_self_href()
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            with open(file_path, "w") as f:
-                json.dump(obj_dict, f, indent=2)
-
+        if len(ndjson_data) != 0:
+            ndjson_data = [str(obj).replace("'", '"') for obj in ndjson_data]
+            with open(ndjson_paths[idx-1], 'w') as f:
+                for x in ndjson_data:
+                    f.write(x)
+                    f.write('\n')
 
 @dataclass
 class DataOfInterest:
