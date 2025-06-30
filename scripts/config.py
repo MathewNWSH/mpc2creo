@@ -30,8 +30,19 @@ def modify_asset_hrefs(
     # ]:
     #     catalog.remove_child(i)
     for item in catalog.get_all_items():
-        if "/" in item.id:
-            item.id = item.id.replace("/", "_")
+        item.assets = {
+            key: asset
+            for key, asset in item.assets.items()
+            if "visual" not in (asset.roles or [])
+        }
+
+        if "\\" in item.id:
+            clear_id = item.id.replace("\\", "_")
+            item.id = item.id.replace("\\", "/")
+            for asset_data in item.assets.values():
+                asset_data.href = asset_data.href.replace(item.id, clear_id)
+            item.id = clear_id
+
         item.properties["auth:schemes"] = {
             "oidc": {
                 "type": "openIdConnect",
@@ -86,7 +97,9 @@ def save_with_empty_links(
 
             for i in obj.providers:
                 if "host" in i.roles:
-                    obj.providers.remove(i)
+                    i.roles.remove("host")
+                    if len(i.roles) == 0:
+                        obj.providers.remove(i)
 
             obj.providers.append(
                 pystac.Provider.from_dict(

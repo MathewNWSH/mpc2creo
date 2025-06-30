@@ -22,7 +22,3 @@ output_dir = "static_results"
 os.makedirs(output_dir, exist_ok=True)
 modify_asset_hrefs(catalog=copied_cat, new_base_s3_path="s3://eodata/auxdata/IPCEI")
 save_with_empty_links(catalog=copied_cat, dest_dir=output_dir)
-
-# copied_cat.normalize_hrefs(output_dir)
-
-# copied_cat.save(catalog_type=pystac.CatalogType.ABSOLUTE_PUBLISHED)
