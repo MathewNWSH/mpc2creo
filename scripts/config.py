@@ -156,11 +156,6 @@ def save_with_empty_links(
             obj_dict["links"] = []
             ndjson_data.append(obj_dict)
 
-            file_path = obj.get_self_href()
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            with open(file_path, "w") as f:
-                json.dump(obj_dict, f, indent=2)
-
         if len(ndjson_data) != 0:
             ndjson_data = [str(obj).replace("'", '"') for obj in ndjson_data]
             with open(ndjson_paths[idx-1], 'w') as f:
