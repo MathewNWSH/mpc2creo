@@ -93,13 +93,19 @@ def save_with_empty_links(
 
     for krotka in catalog.walk():
         for obj in krotka[1]:
-            obj.keywords.append("IPCEI")
+            try:
+                obj.keywords.append("IPCEI")
+            except AttributeError:
+                obj.keywords = ["IPCEI"]
 
-            for i in obj.providers:
-                if "host" in i.roles:
-                    i.roles.remove("host")
-                    if len(i.roles) == 0:
-                        obj.providers.remove(i)
+            try:
+                for i in obj.providers:
+                    if "host" in i.roles:
+                        i.roles.remove("host")
+                        if len(i.roles) == 0:
+                            obj.providers.remove(i)
+            except TypeError:
+                obj.providers = []
 
             obj.providers.append(
                 pystac.Provider.from_dict(

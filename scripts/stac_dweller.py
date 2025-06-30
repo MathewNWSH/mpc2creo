@@ -6,13 +6,16 @@ from config import (
     save_with_empty_links,
 )
 
-root_url = "https://coclico.blob.core.windows.net/stac/v1/catalog.json"
+root_url = "https://s3.eu-central-1.wasabisys.com/stac/openlandmap/catalog.json"
 pystac.stac_io.RetryStacIO()
 cat = pystac.read_file(root_url)
 copied_cat = cat.get_all_collections()
 for collection in copied_cat:
     if collection.id not in [
-        "slp",
+        "dtm.bareearth_ensemble",
+        "pop.count_ghs.jrc",
+        "nightlights.average_viirs.v21",
+        "forest.cover_esacci.ifl",
     ]:
         cat.remove_child(collection.id)
 
