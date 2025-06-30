@@ -25,11 +25,13 @@ def modify_asset_hrefs(
     An asset with href '.../IMG.tif' will be changed to
     's3://new-path/IMG_s2.tif'
     """
-    for i in [
-        "Apache Software Foundation (ASF)",
-    ]:
-        catalog.remove_child(i)
+    # for i in [
+    #     "Apache Software Foundation (ASF)",
+    # ]:
+    #     catalog.remove_child(i)
     for item in catalog.get_all_items():
+        if "/" in item.id:
+            item.id = item.id.replace("/", "_")
         item.properties["auth:schemes"] = {
             "oidc": {
                 "type": "openIdConnect",
@@ -80,6 +82,52 @@ def save_with_empty_links(
 
     for krotka in catalog.walk():
         for obj in krotka[1]:
+            obj.keywords.append("IPCEI")
+
+            for i in obj.providers:
+                if "host" in i.roles:
+                    obj.providers.remove(i)
+
+            obj.providers.append(
+                pystac.Provider.from_dict(
+                    {
+                        "url": "https://cloudferro.com/",
+                        "name": "CloudFerro",
+                        "roles": ["host"],
+                    }
+                )
+            )
+            obj.extra_fields["auth:schemes"] = {
+                "oidc": {
+                    "type": "openIdConnect",
+                    "openIdConnectUrl": "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/.well-known/openid-configuration",
+                },
+                "s3": {"type": "s3"},
+            }
+
+            obj.extra_fields["storage:schemas"] = {
+                "cdse-s3": {
+                    "title": "Copernicus Data Space Ecosystem S3",
+                    "description": "This endpoint provides access to EO data which is stored on the object storage of both CloudFerro Cloud and OpenTelekom Cloud (OTC). See the [documentation](https://documentation.dataspace.copernicus.eu/APIs/S3.html) for more information, including how to get credentials.",
+                    "platform": "https://eodata.dataspace.copernicus.eu",
+                    "requester_pays": False,
+                    "type": "custom-s3",
+                },
+                "creodias-s3": {
+                    "title": "CREODIAS S3",
+                    "description": "Comprehensive Earth Observation Data (EODATA) archive offered by CREODIAS as a commercial part of CDSE, designed to provide users with access to a vast repository of satellite data without predefined quota limits.",
+                    "platform": "https://eodata.cloudferro.com",
+                    "requester_pays": True,
+                    "type": "custom-s3",
+                },
+            }
+
+            obj.stac_extensions.extend(
+                [
+                    "https://stac-extensions.github.io/storage/v2.0.0/schema.json",
+                    "https://stac-extensions.github.io/authentication/v1.1.0/schema.json",
+                ]
+            )
             obj_dict = obj.to_dict()
             obj_dict["links"] = []
 

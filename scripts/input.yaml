@@ -1,6 +1,6 @@
 stac_collections:
-  - url: https://planetarycomputer.microsoft.com/api/stac/v1/
-    collections: ["deltares-water-availability", "esa-cci-lc-netcdf", "hgb", "jrc-gsw", "noaa-cdr-ocean-heat-content-netcdf", "nasa-nex-gddp-cmip6","nasadem"]
+  # - url: https://planetarycomputer.microsoft.com/api/stac/v1/
+  #   collections: ["deltares-water-availability", "esa-cci-lc-netcdf", "hgb", "jrc-gsw", "noaa-cdr-ocean-heat-content-netcdf", "nasa-nex-gddp-cmip6","nasadem"]
 
   # - url: https://geoservice.dlr.de/eoc/ogc/stac/v1/?f=application/json
   #   collections: ["GSP_SCD_MEAN", "S2-soilsuite-africa-2018-2021-P4Y", "S2-soilsuite-europe-2018-2022-P5Y", "SAR4TEC_ASCE", "SAR4TEC_DESC"]
@@ -8,8 +8,8 @@ stac_collections:
   # - url: https://fedeo.ceos.org/
   #   collections: ["Aqua_AMSR-E_L3_AMSR2_Format_SIC_1month_0.25deg"]
 
-  # - url: https://gep-supersites-stac.terradue.com/
-  #   collections: ["csk-flegrei-supersite"]
+  - url: https://gep-supersites-stac.terradue.com/
+    collections: ["csk-flegrei-supersite"]
 
   # - url: https://stac.openlandmap.org/
   #   collections: ["dtm.bareearth_ensemble", "pop.count_ghs.jrc", "nightlights.average_viirs.v21", "forest.cover_esacci.ifl"]
