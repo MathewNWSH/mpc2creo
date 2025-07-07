@@ -86,8 +86,17 @@ def modify_asset_hrefs(
 
 
 def save_with_empty_links(
-    catalog: pystac.Catalog = LOCAL_CATALOGUE, dest_dir: str = "./results"
+    catalog: pystac.Catalog = LOCAL_CATALOGUE, dest_dir: str = "./results", nr_of_items: int = None
 ):
+    """
+    :param catalog: TODO
+    :param dest_dir: Directory for records
+    :param nr_of_items: Number of items to be saved. If not provided all items in collection will be saved
+    
+    Function for reading items in catalog. It will save collections data `into collection.json` file in separate directories for each collection. 
+    Data inside items will be edited to match CDSE schema.
+    All items in each collection will be saved to single file - ndjson.
+    """
     os.makedirs(dest_dir, exist_ok=True)
     catalog.normalize_hrefs(dest_dir)  # Normalizujemy ścieżki do plików lokalnych
     ndjson_paths = []
@@ -157,10 +166,12 @@ def save_with_empty_links(
             with open(file_path, "w") as f:
                 json.dump(obj_dict, f, indent=2)
 
-        for obj in krotka[2]:
+        for item_idx, obj in enumerate(krotka[2]):
             obj_dict = obj.to_dict()
             obj_dict["links"] = []
             ndjson_data.append(obj_dict)
+            if item_idx == nr_of_items:
+                break
 
         if len(ndjson_data) != 0:
             ndjson_data = [str(obj).replace("'", '"') for obj in ndjson_data]
