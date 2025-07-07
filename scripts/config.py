@@ -92,7 +92,7 @@ def save_with_empty_links(
     :param catalog: TODO
     :param dest_dir: Directory for records
     :param nr_of_items: Number of items to be saved. If not provided all items in collection will be saved
-    
+
     Function for reading items in catalog. It will save collections data `into collection.json` file in separate directories for each collection. 
     Data inside items will be edited to match CDSE schema.
     All items in each collection will be saved to single file - ndjson.
@@ -100,7 +100,9 @@ def save_with_empty_links(
     os.makedirs(dest_dir, exist_ok=True)
     catalog.normalize_hrefs(dest_dir)  # Normalizujemy ścieżki do plików lokalnych
     ndjson_paths = []
+    ids_to_download = []
     for idx, krotka in enumerate(catalog.walk()):
+        items_ids = []
         ndjson_data = []
         for obj in krotka[1]:
             try:
@@ -169,9 +171,13 @@ def save_with_empty_links(
         for item_idx, obj in enumerate(krotka[2]):
             obj_dict = obj.to_dict()
             obj_dict["links"] = []
+            items_ids.append(obj_dict['id'])
             ndjson_data.append(obj_dict)
             if item_idx == nr_of_items:
                 break
+
+        if len(items_ids) != 0:
+            ids_to_download.append({obj_dict['collection']: items_ids})
 
         if len(ndjson_data) != 0:
             ndjson_data = [str(obj).replace("'", '"') for obj in ndjson_data]
@@ -179,6 +185,8 @@ def save_with_empty_links(
                 for x in ndjson_data:
                     f.write(x)
                     f.write('\n')
+
+    return ids_to_download
 
 @dataclass
 class DataOfInterest:
