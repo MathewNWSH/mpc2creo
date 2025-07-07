@@ -363,7 +363,7 @@
   "links": [],
   "assets": {
     "data": {
-      "href": "s3://eodata/auxdata/reservoirs/v2021.12/reservoirs_NLDAS.nc",
+      "href": "s3://eodata/auxdata/external/deltares-water-availability/reservoirs/v2021_12/reservoirs_NLDAS.nc",
       "type": "application/x-netcdf",
       "title": "Flood Map",
       "description": "Inundation maps of flood depth using a model that takes into account water level attenuation and is forced by sea level.",
@@ -379,7 +379,7 @@
       ]
     },
     "index": {
-      "href": "s3://eodata/auxdata/references/reservoirs/NLDAS.json",
+      "href": "s3://eodata/auxdata/external/deltares-water-availability/references/reservoirs/NLDAS.json",
       "type": "application/json",
       "title": "Index file",
       "description": "Kerchunk index file.",

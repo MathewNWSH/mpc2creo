@@ -1,8 +1,6 @@
 from scripts.config import (
-    LOCAL_CATALOGUE,
     InputData,
     LocalSTACCollections,
-    modify_asset_hrefs,
     save_with_empty_links,
 )
 
@@ -16,8 +14,8 @@ def main():
             local_stac_instance = LocalSTACCollections(*package)
             local_stac_instance.add_to_local_catalogue()
 
-    modify_asset_hrefs()
-    LOCAL_CATALOGUE.normalize_hrefs(root_href="s3://eodata/auxdata/")
+    # modify_asset_hrefs()
+    # LOCAL_CATALOGUE.normalize_hrefs(root_href="s3://eodata/auxdata/")
 
     save_with_empty_links()
 

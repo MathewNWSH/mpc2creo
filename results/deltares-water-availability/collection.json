@@ -5,7 +5,9 @@
   "description": "[Deltares](https://www.deltares.nl/en/) has produced a hydrological model approach to simulate historical daily reservoir variations for 3,236 locations across the globe for the period 1970-2020 using the distributed [wflow_sbm](https://deltares.github.io/Wflow.jl/stable/model_docs/model_configurations/) model. The model outputs long-term daily information on reservoir volume, inflow and outflow dynamics, as well as information on upstream hydrological forcing.\n\nThey hydrological model was forced with 5 different precipitation products. Two products (ERA5 and CHIRPS) are available at the global scale, while for Europe, USA and Australia a regional product was use (i.e. EOBS, NLDAS and BOM, respectively). Using these different precipitation products, it becomes possible to assess the impact of uncertainty in the model forcing. A different number of basins upstream of reservoirs are simulated, given the spatial coverage of each precipitation product.\n\nSee the complete [methodology documentation](https://ai4edatasetspublicassets.blob.core.windows.net/assets/aod_docs/pc-deltares-water-availability-documentation.pdf) for more information.\n\n## Dataset coverages\n\n| Name   | Scale                    | Period    | Number of basins |\n|--------|--------------------------|-----------|------------------|\n| ERA5   | Global                   | 1967-2020 | 3236             |\n| CHIRPS | Global (+/- 50 latitude) | 1981-2020 | 2951             |\n| EOBS   | Europe/North Africa      | 1979-2020 | 682              |\n| NLDAS  | USA                      | 1979-2020 | 1090             |\n| BOM    | Australia                | 1979-2020 | 116              |\n\n## STAC Metadata\n\nThis STAC collection includes one STAC item per dataset. The item includes a `deltares:reservoir` property that can be used to query for the URL of a specific dataset.\n\n## Contact\n\nFor questions about this dataset, contact [`aiforearthdatasets@microsoft.com`](mailto:aiforearthdatasets@microsoft.com?subject=deltares-floods%20question).",
   "links": [],
   "stac_extensions": [
-    "https://stac-extensions.github.io/datacube/v2.2.0/schema.json"
+    "https://stac-extensions.github.io/datacube/v2.2.0/schema.json",
+    "https://stac-extensions.github.io/storage/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/authentication/v1.1.0/schema.json"
   ],
   "item_assets": {
     "data": {
@@ -252,6 +254,31 @@
   "msft:storage_account": "deltaresreservoirssa",
   "msft:short_description": "Historical daily reservoir variations.",
   "msft:region": "westeurope",
+  "auth:schemes": {
+    "oidc": {
+      "type": "openIdConnect",
+      "openIdConnectUrl": "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/.well-known/openid-configuration"
+    },
+    "s3": {
+      "type": "s3"
+    }
+  },
+  "storage:schemas": {
+    "cdse-s3": {
+      "title": "Copernicus Data Space Ecosystem S3",
+      "description": "This endpoint provides access to EO data which is stored on the object storage of both CloudFerro Cloud and OpenTelekom Cloud (OTC). See the [documentation](https://documentation.dataspace.copernicus.eu/APIs/S3.html) for more information, including how to get credentials.",
+      "platform": "https://eodata.dataspace.copernicus.eu",
+      "requester_pays": false,
+      "type": "custom-s3"
+    },
+    "creodias-s3": {
+      "title": "CREODIAS S3",
+      "description": "Comprehensive Earth Observation Data (EODATA) archive offered by CREODIAS as a commercial part of CDSE, designed to provide users with access to a vast repository of satellite data without predefined quota limits.",
+      "platform": "https://eodata.cloudferro.com",
+      "requester_pays": true,
+      "type": "custom-s3"
+    }
+  },
   "title": "Deltares Global Water Availability",
   "extent": {
     "spatial": {
@@ -279,7 +306,8 @@
     "Water availability",
     "Reservoir",
     "Water",
-    "Precipitation"
+    "Precipitation",
+    "IPCEI"
   ],
   "providers": [
     {
@@ -290,11 +318,11 @@
       "url": "https://www.deltares.nl/en/"
     },
     {
-      "name": "Microsoft",
+      "name": "CloudFerro",
       "roles": [
         "host"
       ],
-      "url": "https://planetarycomputer.microsoft.com/"
+      "url": "https://cloudferro.com/"
     }
   ],
   "summaries": {
@@ -305,15 +333,5 @@
       "NLDAS",
       "BOM"
     ]
-  },
-  "assets": {
-    "thumbnail": {
-      "href": "https://ai4edatasetspublicassets.azureedge.net/assets/pc_thumbnails/additional_datasets/deltares-reservoir.jpg",
-      "type": "image/png",
-      "title": "Thumbnail",
-      "roles": [
-        "thumbnail"
-      ]
-    }
   }
 }

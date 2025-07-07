@@ -12,14 +12,15 @@ from pystac_client import Client
 LOCAL_CATALOGUE: pystac.Catalog = pystac.Catalog(
     id="mpc2creo",
     description="...",
-    href="s3://eodata/auxdata/",
+    href="s3://eodata/auxdata/external/",
 )
 
 
 def modify_asset_hrefs(
     catalog: pystac.Catalog = LOCAL_CATALOGUE,
-    new_base_s3_path: str = "s3://eodata/auxdata",
+    new_base_s3_path: str = "s3://eodata/auxdata/external",
 ):
+    # to wszystko mozna przeniesc do tego iteratora krotka 2
     """
     Example:
     An asset with href '.../IMG.tif' will be changed to
@@ -80,19 +81,27 @@ def modify_asset_hrefs(
                 "storage:refs": ["cdse-s3", "creodias-s3"],
                 "auth:refs": ["s3"],
             }
-
-            new_href = new_base_s3_path + urlparse(asset.href).path
+            path = str(urlparse(asset.href).path)
+            name, ext = os.path.splitext(path)
+            new_href = (
+                new_base_s3_path
+                + "/"
+                + item.collection_id
+                + name.replace(".", "_")
+                + ext
+            )
             asset.href = new_href
 
 
 def save_with_empty_links(
-    catalog: pystac.Catalog = LOCAL_CATALOGUE, dest_dir: str = "./results"
+    catalog: pystac.Catalog = LOCAL_CATALOGUE, dest_dir: str = "./results_xd"
 ):
     os.makedirs(dest_dir, exist_ok=True)
     catalog.normalize_hrefs(dest_dir)  # Normalizujemy ścieżki do plików lokalnych
 
     for krotka in catalog.walk():
         for obj in krotka[1]:
+            obj.assets = []
             try:
                 obj.keywords.append("IPCEI")
             except AttributeError:
