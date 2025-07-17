@@ -92,15 +92,21 @@ def save_with_empty_links(
     :param catalog: TODO
     :param dest_dir: Directory for records
     :param nr_of_items: Number of items to be saved. If not provided all items in collection will be saved
-    :return: Returns list of dictionaries with found items. One dictionary from list looks like that -> {collection_name: item_id, item_id_2, ...}
+    :return: Returns dictionary of lists with found items. One item of dictionary looks like that -> {collection_name: [item_id, item_id_2, ...]}
 
     Function for reading items in catalog. It will save collections data `into collection.json` file in separate directories for each collection. 
     Data inside items will be edited to match CDSE schema.
     All items in each collection will be saved to single file - ndjson.
     """
+    # Check if nr_of_items is natural number
+    if nr_of_items <= 0:
+        raise ValueError("Number of items to download is not a natural number.")
     os.makedirs(dest_dir, exist_ok=True)
-    catalog.normalize_hrefs(dest_dir)  # Normalizujemy ścieżki do plików lokalnych
+    # Normalize paths to local files
+    catalog.normalize_hrefs(dest_dir)
+    # list of paths for saving ndjson files with STAC data
     ndjson_paths = []
+    # dict of collection name : items' id to download
     ids_to_download = {}
     for idx, krotka in enumerate(catalog.walk()):
         items_ids = []
@@ -174,7 +180,7 @@ def save_with_empty_links(
             obj_dict["links"] = []
             items_ids.append(obj_dict['id'])
             ndjson_data.append(obj_dict)
-            if item_idx == nr_of_items:
+            if (item_idx+1) == nr_of_items:
                 break
 
         if len(items_ids) != 0:

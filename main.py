@@ -21,7 +21,7 @@ def main():
     modify_asset_hrefs()
     LOCAL_CATALOGUE.normalize_hrefs(root_href="s3://eodata/auxdata/")
     
-    ids = save_with_empty_links()
+    ids = save_with_empty_links(nr_of_items=1)
     hrefs = create_hrefs(other_stacs.stac_collections[0].url, ids)
 
     for item in hrefs:
