@@ -3,12 +3,16 @@ import stac_asset
 import asyncio
 import os
 import stac_asset.blocking
+import stac_asset.errors
 import requests
 
 def download_single_item(href: str, dir_path: str):
     #print(get_assets_href(href))
     item = pystac.read_file(href)
-    item = stac_asset.blocking.download_item(item, dir_path)
+    try:
+        item = stac_asset.blocking.download_item(item, dir_path)
+    except stac_asset.errors.DownloadError as e:
+        print("Error in accessing asset: ", e)
 
 def create_hrefs(catalog_href, item_ids) -> list[str]:
     hrefs = []

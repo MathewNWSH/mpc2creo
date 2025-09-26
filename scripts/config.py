@@ -208,6 +208,7 @@ class DataOfInterest:
 
     def get_items(self, collection: str) -> pystac.item_collection.ItemCollection:
         search = self.catalogue.search(collections=collection)
+        search._max_items = 5
         all_items = search.item_collection()
         return all_items
 
